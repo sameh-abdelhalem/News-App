@@ -1,18 +1,22 @@
-import NewsList from "@/components/news-list";
+import Link from 'next/link';
+
+import NewsList from '@/components/news-list';
 import {
   getAvailableNewsMonths,
   getAvailableNewsYears,
   getNewsForYear,
   getNewsForYearAndMonth,
-} from "@/lib/news";
-import Link from "next/link";
+} from '@/lib/news';
 
 export default function FilteredNewsPage({ params }) {
   const filter = params.filter;
+
   const selectedYear = filter?.[0];
   const selectedMonth = filter?.[1];
+
   let news;
   let links = getAvailableNewsYears();
+
   if (selectedYear && !selectedMonth) {
     news = getNewsForYear(selectedYear);
     links = getAvailableNewsMonths(selectedYear);
@@ -22,16 +26,21 @@ export default function FilteredNewsPage({ params }) {
     news = getNewsForYearAndMonth(selectedYear, selectedMonth);
     links = [];
   }
+
   let newsContent = <p>No news found for the selected period.</p>;
+
   if (news && news.length > 0) {
     newsContent = <NewsList news={news} />;
   }
+
   if (
     (selectedYear && !getAvailableNewsYears().includes(+selectedYear)) ||
-    (selectedMonth && !getAvailableNewsMonths(+selectedYear))
+    (selectedMonth &&
+      !getAvailableNewsMonths(selectedYear).includes(+selectedMonth))
   ) {
-    throw new Error("Invalid Filter");
+    throw new Error('Invalid filter.');
   }
+
   return (
     <>
       <header id="archive-header">
@@ -41,6 +50,7 @@ export default function FilteredNewsPage({ params }) {
               const href = selectedYear
                 ? `/archive/${selectedYear}/${link}`
                 : `/archive/${link}`;
+
               return (
                 <li key={link}>
                   <Link href={href}>{link}</Link>
@@ -53,6 +63,4 @@ export default function FilteredNewsPage({ params }) {
       {newsContent}
     </>
   );
-  // const news = getNewsForYear(newsYear);
-  // return <NewsList news={news} />;
 }
