@@ -8,7 +8,6 @@ export default function NewsList({ news }) {
           <Link href={`/news/${newsItem.slug}`}>
             <img src={`/images/news/${newsItem.image}`} alt={newsItem.title} />
             {newsItem.title}
-            {newsItem.title}
           </Link>
         </li>
       ))}
